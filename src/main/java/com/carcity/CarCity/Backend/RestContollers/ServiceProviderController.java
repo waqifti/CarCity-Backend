@@ -23,8 +23,8 @@ public class ServiceProviderController {
 	
 	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/ServiceProvider/UpdateLocation"} )
 	public ResponseEntity<?> UpdateServiceProviderLocation(@RequestHeader String sessiontoken,
-			@RequestParam long lati,
-			@RequestParam long longi,
+			@RequestParam double lati,
+			@RequestParam double longi,
 			@RequestParam String time) throws Exception {
 
 
@@ -51,7 +51,7 @@ public class ServiceProviderController {
 		LocationRecord toSave=new LocationRecord();
 		toSave.setLati(lati);
 		toSave.setLongi(longi);
-		toSave.setTime(time);
+		//toSave.setTime(time);
 		toSave.setOf(apu);
 
 

@@ -10,8 +10,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.carcity.CarCity.Backend.dataentities.LocationRecord;
 
 public class LocationDTO {
-	private long longi;
-	private long lati;
+	private double longi;
+	private double lati;
 	private String recordedat;
 	private String dbentryat;
 
@@ -22,19 +22,19 @@ public class LocationDTO {
 	public LocationDTO(LocationRecord lr) {
 		this.longi=lr.getLongi();
 		this.lati=lr.getLati();
-		this.setRecordedat(lr.getTime());
+		this.setRecordedat(lr.getTimeondevice().toString());
 		this.setDbentryat(lr.getCreatedAt().toString());
 	}
-	public long getLongi() {
+	public double getLongi() {
 		return longi;
 	}
-	public void setLongi(long longi) {
+	public void setLongi(double longi) {
 		this.longi = longi;
 	}
-	public long getLati() {
+	public double getLati() {
 		return lati;
 	}
-	public void setLati(long lati) {
+	public void setLati(double lati) {
 		this.lati = lati;
 	}
 	public String getRecordedat() {

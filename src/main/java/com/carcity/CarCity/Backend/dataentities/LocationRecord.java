@@ -22,9 +22,12 @@ public class LocationRecord {
 	private ApplicationUser of;
 	
 	
-	private long longi;
-	private long lati;
-	private String time;
+	private double longi;
+	private double lati;
+	
+	
+	
+	private Date timeondevice;
 	
 	
 	@CreationTimestamp
@@ -52,33 +55,33 @@ public class LocationRecord {
 	}
 
 
-	public long getLongi() {
+	public double getLongi() {
 		return longi;
 	}
 
 
-	public void setLongi(long longi) {
+	public void setLongi(double longi) {
 		this.longi = longi;
 	}
 
 
-	public long getLati() {
+	public double getLati() {
 		return lati;
 	}
 
 
-	public void setLati(long lati) {
+	public void setLati(double lati) {
 		this.lati = lati;
 	}
 
 
-	public String getTime() {
-		return time;
+	public Date getTimeondevice() {
+		return timeondevice;
 	}
 
 
-	public void setTime(String time) {
-		this.time = time;
+	public void setTimeondevice(Date timeondevice) {
+		this.timeondevice = timeondevice;
 	}
 
 
@@ -90,7 +93,7 @@ public class LocationRecord {
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
-	
+
 	
 	
 }
