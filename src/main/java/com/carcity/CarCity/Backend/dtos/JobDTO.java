@@ -36,7 +36,7 @@ public class JobDTO {
 	
 	
 	private String assignedto;
-
+	private String managedby;
 	public JobDTO() {
 		
 		
@@ -49,6 +49,7 @@ public class JobDTO {
 		this.state=j.getState();
 		this.dbentryat=j.getDbentryat().toString();
 		this.assignedto= ""+j.getAssignedto().getCell()+" ("+j.getAssignedto().getUt().toString()+")";
+		this.managedby= ""+j.getManagedby().getCell()+" ("+j.getManagedby().getUt().toString()+")";
 	}
 
 	public int getId() {
@@ -56,6 +57,14 @@ public class JobDTO {
 	}
 
 
+
+	public String getManagedby() {
+		return managedby;
+	}
+
+	public void setManagedby(String managedby) {
+		this.managedby = managedby;
+	}
 
 	public void setId(int id) {
 		this.id = id;

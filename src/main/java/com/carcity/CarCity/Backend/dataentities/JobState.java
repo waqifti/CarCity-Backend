@@ -12,7 +12,9 @@ public enum JobState {
 	State4,
 	State5,
 	State6,
-	State7;
+	State7,
+	NEW_JOB_SCHEDULED_LATER,
+	NEW_JOB_WANTS_SERVICE_NOW;
 
 	private static final List<JobState> VALUES =
 			Collections.unmodifiableList(Arrays.asList(values()));

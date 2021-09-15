@@ -3,6 +3,8 @@ package com.carcity.CarCity.Backend.dataentities;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,6 +35,35 @@ public class LocationRecord {
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdAt;
+	
+	@Enumerated (value = EnumType.STRING)
+	private AppState appstate;
+	
+	@Enumerated (value = EnumType.STRING)
+	private LocationProvider locationprovider;
+	
+	
+	
+
+
+	public LocationProvider getLocationprovider() {
+		return locationprovider;
+	}
+
+
+	public void setLocationprovider(LocationProvider locationprovider) {
+		this.locationprovider = locationprovider;
+	}
+
+
+	public AppState getAppstate() {
+		return appstate;
+	}
+
+
+	public void setAppstate(AppState appstate) {
+		this.appstate = appstate;
+	}
 
 
 	public int getId() {

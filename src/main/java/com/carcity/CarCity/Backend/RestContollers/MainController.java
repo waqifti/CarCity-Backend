@@ -1,7 +1,11 @@
 package com.carcity.CarCity.Backend.RestContollers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.carcity.CarCity.Backend.PushNotificationUtil;
 import com.carcity.CarCity.Backend.dataentities.ApplicationUser;
 import com.carcity.CarCity.Backend.dataentities.ApplicationUserRepo;
 import com.carcity.CarCity.Backend.dataentities.LocationRecord;
@@ -22,7 +27,8 @@ public class MainController {
 
 	@Autowired ApplicationUserRepo objApplicationUserRepo;
 	@Autowired LocationRecordRepo objLocationRecordRepo;
-
+	@Autowired PushNotificationUtil objPushNotificationUtil;
+	Logger logger = LoggerFactory.getLogger(MainController.class);
 
 	@RequestMapping(method=RequestMethod.GET,value={"/test"} )
 	public ResponseEntity<?> test() throws Exception {
@@ -38,15 +44,54 @@ public class MainController {
 	}
 
 
+	@RequestMapping(method=RequestMethod.POST,value={"/GetJobTypes"} )
+	public ResponseEntity<?> GetJobTypes(@RequestHeader String sessiontoken) throws Exception {
 
-	
+
+
+		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
+
+		if(apu==null) {
+			return ResponseEntity
+					.status(HttpStatus.METHOD_FAILURE)
+					.body("Wrong sessiontoken");
+		} else {
+			List<String> jobtypes=new ArrayList<String>();
+			jobtypes.add("Job 1");
+			jobtypes.add("Job 2");
+			jobtypes.add("Job 3");
+			jobtypes.add("Job 4");
+			jobtypes.add("Job 5");
+
+			return ResponseEntity
+					.status(HttpStatus.OK)
+					.body(jobtypes);
+
+
+		}
+
+
+
+
+
+
+
+
+
+
+	}
+
 
 	@RequestMapping(method=RequestMethod.POST,value={"/Login"} )
 	public ResponseEntity<?> Login(@RequestParam long cell,
 			@RequestParam String password,
+			@RequestParam(required=true) String fcmtoken,
 			@RequestParam UserTypes ut) throws Exception {
 
-
+		System.out.println("====Login=====");
+		System.out.println("====cell====="+cell);
+		System.out.println("====password====="+password);
+		System.out.println("====fcmtoken====="+fcmtoken);
 
 		ApplicationUser apu = objApplicationUserRepo.findByCell(cell);
 
@@ -71,12 +116,21 @@ public class MainController {
 						.body("Wrong password");
 			}
 		}
-
+		
+		
+		apu.setFcmtoken(fcmtoken);
 		apu.setSessiontoken(UUID.randomUUID().toString());
 
 
 		objApplicationUserRepo.saveAndFlush(apu);
-
+		if(fcmtoken!=null && !fcmtoken.trim().isEmpty()) {
+			try {
+				objPushNotificationUtil.sendNotificationToAndroid(fcmtoken, "Car City", "Login kurney key liye shukria.");
+			} catch (Exception ex) {
+				logger.error("",ex);
+			}
+		
+		}
 
 		return ResponseEntity
 				.status(HttpStatus.OK)

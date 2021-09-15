@@ -31,6 +31,8 @@ public class ApplicationUser {
 	
 	private String sessiontoken;
 	
+	private String fcmtoken;
+	
 	@Enumerated (value = EnumType.STRING)
 	private UserTypes ut;
 	
@@ -42,6 +44,17 @@ public class ApplicationUser {
 	@UpdateTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
+	
+	
+	
+
+	public String getFcmtoken() {
+		return fcmtoken;
+	}
+
+	public void setFcmtoken(String fcmtoken) {
+		this.fcmtoken = fcmtoken;
+	}
 
 	public int getId() {
 		return id;

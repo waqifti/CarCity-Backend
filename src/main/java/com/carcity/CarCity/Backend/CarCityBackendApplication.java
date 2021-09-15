@@ -1,5 +1,7 @@
 package com.carcity.CarCity.Backend;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -74,11 +76,16 @@ public class CarCityBackendApplication {
 	//@PostConstruct
 	public void initjobs(){
 		List<ApplicationUser> sps= objApplicationUserRepo.findAllByUt(UserTypes.ServiceProvider);
+		List<ApplicationUser> cuss= objApplicationUserRepo.findAllByUt(UserTypes.Customer);
 		for(int i=0;i<10;i++) {
 			int randomNum = ThreadLocalRandom.current().nextInt(0, sps.size());
 
 			Jobs toSave=new Jobs();
-			toSave.setAssignedto(sps.get(randomNum));
+			toSave.setManagedby(sps.get(randomNum));
+			
+			int randomNumCus = ThreadLocalRandom.current().nextInt(0, cuss.size());
+			toSave.setCreatedby(cuss.get(randomNumCus));
+			
 			toSave.setState(JobState.randomState());
 			toSave.setDescription("Short details");
 			toSave.setNotes("Long details Long details Long details Long details Long details Long details Long details Long details Long details Long details");
@@ -120,7 +127,13 @@ public class CarCityBackendApplication {
 		System.out.println("OK End");
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
+		
+		
+		//
+		
+	   // Date date1=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse("Sep 7, 2021 6:01:18 PM");  
+		
 		SpringApplication.run(CarCityBackendApplication.class, args);
 	}
 

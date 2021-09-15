@@ -1,6 +1,7 @@
 package com.carcity.CarCity.Backend.RestContollers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.carcity.CarCity.Backend.dataentities.ApplicationUser;
 import com.carcity.CarCity.Backend.dataentities.ApplicationUserRepo;
+import com.carcity.CarCity.Backend.dataentities.JobState;
 import com.carcity.CarCity.Backend.dataentities.Jobs;
 import com.carcity.CarCity.Backend.dataentities.JobsRepo;
 import com.carcity.CarCity.Backend.dataentities.LocationRecord;
@@ -30,6 +32,49 @@ public class AdminPortalContoller {
 	@Autowired LocationRecordRepo objLocationRecordRepo;
 	@Autowired JobsRepo objJobsRepo;
 
+
+	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/AdminPortal/changeJobInfo"} )
+	public ResponseEntity<?> changeJobInfo(@RequestHeader String sessiontoken,
+			@RequestParam int jobid,
+			@RequestParam(required=false) int assignedto,
+			@RequestParam(required=true) JobState newstate) throws Exception {
+
+		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
+
+		if(apu==null) {
+			return ResponseEntity
+					.status(HttpStatus.METHOD_FAILURE)
+					.body("Wrong sessiontoken");
+		} else {
+
+			if(apu.getUt()==UserTypes.AdminPortal) {
+
+			} else {
+				return ResponseEntity
+						.status(HttpStatus.METHOD_FAILURE)
+						.body("Cannot call this api for "+apu.getUt().toString());
+			}
+
+
+		}
+		ApplicationUser sp=objApplicationUserRepo.getOne(assignedto);
+		if(sp==null || sp.getUt()!=UserTypes.ServiceProvider) {
+			return ResponseEntity
+					.status(HttpStatus.METHOD_FAILURE)
+					.body("Assigned to must be sp");
+		}
+
+
+		Jobs job = objJobsRepo.getById(jobid);
+		job.setState(newstate);
+		job.setAssignedto(sp);
+		objJobsRepo.saveAndFlush(job);
+
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body("");
+
+	}
 
 
 	@RequestMapping(method=RequestMethod.GET,value={"/Authenticated/AdminPortal/getAllJobs"} )
@@ -70,7 +115,7 @@ public class AdminPortalContoller {
 
 	}
 
-	@RequestMapping(method=RequestMethod.GET,value={"/Authenticated/AdminPortal/SendAMessage"} )
+	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/AdminPortal/SendAMessage"} )
 	public ResponseEntity<?> SendAMessage(@RequestHeader String sessiontoken,
 			@RequestParam List<Long> cellnos,@RequestParam String message) throws Exception {
 		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
