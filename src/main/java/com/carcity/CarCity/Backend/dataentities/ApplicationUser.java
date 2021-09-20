@@ -46,7 +46,18 @@ public class ApplicationUser {
 	private Date updatedAt;
 	
 	
+	private Boolean jobsearchactivated;
 	
+	
+	
+
+	public Boolean getJobsearchactivated() {
+		return jobsearchactivated;
+	}
+
+	public void setJobsearchactivated(Boolean jobsearchactivated) {
+		this.jobsearchactivated = jobsearchactivated;
+	}
 
 	public String getFcmtoken() {
 		return fcmtoken;

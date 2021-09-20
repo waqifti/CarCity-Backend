@@ -27,13 +27,14 @@ import com.carcity.CarCity.Backend.dataentities.LocationRecord;
 import com.carcity.CarCity.Backend.dataentities.LocationRecordRepo;
 import com.carcity.CarCity.Backend.dataentities.UserTypes;
 import com.carcity.CarCity.Backend.dtos.JobDTO;
+import com.carcity.CarCity.Backend.dtos.ServiceProviderUserDTO;
 
 @RestController
 public class CustomerController {
 	@Autowired ApplicationUserRepo objApplicationUserRepo;
 	@Autowired LocationRecordRepo objLocationRecordRepo;
 	@Autowired JobsRepo objJobsRepo;
-	
+
 	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/Customer/getJobDetails"} )
 	public ResponseEntity<?> createJobRequest(@RequestHeader String sessiontoken,
 			@RequestParam Integer jobid) throws ParseException {
@@ -59,12 +60,35 @@ public class CustomerController {
 
 
 		Jobs job = objJobsRepo.getById(jobid);
-		
+
 		if(job!=null) {
 			if(job.getCreatedby().getId()==apu.getId()) {
+
+
+				JobDTO toSend=new JobDTO(job);
+
+				if(job.getAssignedto()!=null) {
+					ServiceProviderUserDTO toAdd=new ServiceProviderUserDTO();
+					toAdd.setCell(job.getAssignedto().getCell());
+
+					LocationRecord latestLocation=objLocationRecordRepo.findTopByOfOrderByTimeondeviceDesc(job.getAssignedto());
+					if(latestLocation!=null) {
+						toAdd.setCurrentlati(latestLocation.getLati());
+						toAdd.setCurrentlongi(latestLocation.getLongi());
+					}
+
+
+
+
+					toSend.setAssignedto(toAdd);
+
+
+
+
+				} 
 				return ResponseEntity
 						.status(HttpStatus.OK)
-						.body(new JobDTO(job));
+						.body(toSend);
 			} else {
 				return ResponseEntity
 						.status(HttpStatus.METHOD_FAILURE)
@@ -75,8 +99,8 @@ public class CustomerController {
 					.status(HttpStatus.METHOD_FAILURE)
 					.body("Job not found.");
 		}
-		
-	
+
+
 	}
 
 	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/Customer/createJobRequest"} )
@@ -84,6 +108,8 @@ public class CustomerController {
 			@RequestParam HashSet<String> jobtypes,
 			@RequestParam String description,
 			@RequestParam String notes,
+			@RequestParam double lati,
+			@RequestParam double longi,
 			@RequestParam(required=false) String scheduledAt) throws ParseException {
 
 		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
@@ -111,11 +137,25 @@ public class CustomerController {
 		newJob.setJobtypes(jobtypes);
 		newJob.setDescription(description);
 		newJob.setNotes(notes);
+		newJob.setLati(lati);
+		newJob.setLongi(longi);
 
 
 		if(scheduledAt!=null) {
-			Date date1=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse(scheduledAt); 
-			newJob.setScheduledAt(date1);
+			try {
+				Date date1=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse(scheduledAt); 
+				newJob.setScheduledAt(date1);
+			} catch (Exception ex) {
+
+				Date date1=new SimpleDateFormat("dd MMM yyyy HH:mm:ss").parse(scheduledAt); 
+				newJob.setScheduledAt(date1);
+
+
+
+
+
+			}
+
 			newJob.setState(JobState.NEW_JOB_SCHEDULED_LATER);
 		} else {
 			newJob.setState(JobState.NEW_JOB_WANTS_SERVICE_NOW);
@@ -136,67 +176,5 @@ public class CustomerController {
 				.body(newJob.getId());
 	}
 
-	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/Customer/UpdateLocation"} )
-	public ResponseEntity<?> UpdateCustomerLocation(@RequestHeader String sessiontoken,
-			@RequestParam double lati,
-			@RequestParam double longi,
-			@RequestParam String time,
-			@RequestParam AppState appstate,
-			@RequestParam LocationProvider locationprovider) throws Exception {
-
-
-
-		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
-
-		if(apu==null) {
-			return ResponseEntity
-					.status(HttpStatus.METHOD_FAILURE)
-					.body("Wrong sessiontoken");
-		} else {
-
-			if(apu.getUt()==UserTypes.Customer) {
-
-			} else {
-				return ResponseEntity
-						.status(HttpStatus.METHOD_FAILURE)
-						.body("Cannot call this api for "+apu.getUt().toString());
-			}
-
-
-		}
-		//Sep 7, 2021 6:01:18 PM
-		try {
-			Date date1=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse(time);  
-
-
-
-			LocationRecord toSave=new LocationRecord();
-			toSave.setLati(lati);
-			toSave.setLongi(longi);
-			toSave.setTimeondevice(date1);
-			toSave.setAppstate(appstate);
-			toSave.setOf(apu);
-			toSave.setLocationprovider(locationprovider);
-
-			objLocationRecordRepo.saveAndFlush(toSave);
-
-
-			return ResponseEntity
-					.status(HttpStatus.OK)
-					.body("");
-		} catch (Exception ex) {
-			return ResponseEntity
-					.status(HttpStatus.EXPECTATION_FAILED)
-					.body(ex);
-		}
-
-
-
-
-
-
-
-
-	}
 
 }

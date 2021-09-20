@@ -30,6 +30,7 @@ public class LocationRecord {
 	
 	
 	private Date timeondevice;
+	private String timeondeviceasstring;
 	
 	
 	@CreationTimestamp
@@ -44,6 +45,16 @@ public class LocationRecord {
 	
 	
 	
+
+
+	public String getTimeondeviceasstring() {
+		return timeondeviceasstring;
+	}
+
+
+	public void setTimeondeviceasstring(String timeondeviceasstring) {
+		this.timeondeviceasstring = timeondeviceasstring;
+	}
 
 
 	public LocationProvider getLocationprovider() {
@@ -123,6 +134,14 @@ public class LocationRecord {
 
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
+	}
+
+
+	@Override
+	public String toString() {
+		return "LocationRecord [id=" + id + ", of=" + of + ", longi=" + longi + ", lati=" + lati + ", timeondevice="
+				+ timeondevice + ", timeondeviceasstring=" + timeondeviceasstring + ", createdAt=" + createdAt
+				+ ", appstate=" + appstate + ", locationprovider=" + locationprovider + "]";
 	}
 
 	

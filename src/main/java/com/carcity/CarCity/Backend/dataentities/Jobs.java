@@ -24,57 +24,83 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table( uniqueConstraints={
-	       @UniqueConstraint(columnNames={"assignedto_id"})
-	   })
+		@UniqueConstraint(columnNames={"assignedto_id"})
+})
 public class Jobs {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	
-	
+
+
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dbentryat;
-	
-	
+
+
 	@ElementCollection
 	Set<String> jobtypes=new HashSet<String>();
-	
-	
+
+
 	@Enumerated (value = EnumType.STRING)
 	private JobState state;
-	
-	
+
+
 	private String description;
 	private String notes;
-	
-	
+
+
+	private Double longi;
+	private Double lati;
+
+
 	@OneToOne
 	private ApplicationUser managedby;
-	
+
 	@OneToOne
 	private ApplicationUser createdby;
-	
+
 	@OneToOne
 	private ApplicationUser assignedto;
-	
+
 	@OneToOne
 	private ApplicationUser completedby;
-	
-	
+
+
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date scheduledAt;
-	
-	
 
-	
+
+
+
 	@UpdateTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
+
+
+
+
+
 	
-	
-	
+
+	public Double getLongi() {
+		return longi;
+	}
+
+
+	public void setLongi(Double longi) {
+		this.longi = longi;
+	}
+
+
+	public Double getLati() {
+		return lati;
+	}
+
+
+	public void setLati(Double lati) {
+		this.lati = lati;
+	}
 
 
 	public ApplicationUser getCompletedby() {
@@ -196,13 +222,13 @@ public class Jobs {
 	public void setJobtypes(Set<String> jobtypes) {
 		this.jobtypes = jobtypes;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
 }

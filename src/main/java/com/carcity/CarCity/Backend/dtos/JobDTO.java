@@ -18,38 +18,57 @@ import com.carcity.CarCity.Backend.dataentities.JobState;
 import com.carcity.CarCity.Backend.dataentities.Jobs;
 
 public class JobDTO {
-	
+
 	private int id;
-	
-	
-	
+
+
+
 	private String dbentryat;
-	
-	
+
+
+	private Double longi;
+	private Double lati;
+
+
 
 	private JobState state;
-	
-	
+
+
 	private String description;
 	private String notes;
+
+
+
+	
+	private ServiceProviderUserDTO assignedto;
 	
 	
-	
-	private String assignedto;
 	private String managedby;
 	public JobDTO() {
-		
-		
+
+
 	}
-	
+
 	public JobDTO(Jobs j) {
 		this.id=j.getId();
 		this.notes=j.getNotes();
 		this.description=j.getDescription();
 		this.state=j.getState();
 		this.dbentryat=j.getDbentryat().toString();
-		this.assignedto= ""+j.getAssignedto().getCell()+" ("+j.getAssignedto().getUt().toString()+")";
-		this.managedby= ""+j.getManagedby().getCell()+" ("+j.getManagedby().getUt().toString()+")";
+
+		this.longi=j.getLongi();
+		this.lati=j.getLati();
+
+		
+
+		if(j.getManagedby()!=null) {
+			this.managedby= ""+j.getManagedby().getCell()+" ("+j.getManagedby().getUt().toString()+")";
+		} else {
+			this.managedby= "Not managed by anyone yet.";
+		}
+
+
+
 	}
 
 	public int getId() {
@@ -58,6 +77,24 @@ public class JobDTO {
 
 
 
+	public Double getLongi() {
+		return longi;
+	}
+
+
+	public void setLongi(Double longi) {
+		this.longi = longi;
+	}
+
+
+	public Double getLati() {
+		return lati;
+	}
+
+
+	public void setLati(Double lati) {
+		this.lati = lati;
+	}
 	public String getManagedby() {
 		return managedby;
 	}
@@ -118,20 +155,20 @@ public class JobDTO {
 		this.notes = notes;
 	}
 
-
-
-	public String getAssignedto() {
+	public ServiceProviderUserDTO getAssignedto() {
 		return assignedto;
 	}
 
-
-
-	public void setAssignedto(String assignedto) {
+	public void setAssignedto(ServiceProviderUserDTO assignedto) {
 		this.assignedto = assignedto;
 	}
+
+
+
 	
-	
-	
-	
-	
+
+
+
+
+
 }

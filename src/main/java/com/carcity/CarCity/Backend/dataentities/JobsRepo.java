@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface JobsRepo extends JpaRepository<Jobs,Integer> {
-
+	Jobs findByAssignedto(ApplicationUser assignedto);
 }

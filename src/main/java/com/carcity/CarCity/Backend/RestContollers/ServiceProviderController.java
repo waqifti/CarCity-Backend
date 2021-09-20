@@ -1,8 +1,14 @@
 package com.carcity.CarCity.Backend.RestContollers;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,17 +21,22 @@ import org.springframework.web.bind.annotation.RestController;
 import com.carcity.CarCity.Backend.dataentities.AppState;
 import com.carcity.CarCity.Backend.dataentities.ApplicationUser;
 import com.carcity.CarCity.Backend.dataentities.ApplicationUserRepo;
+import com.carcity.CarCity.Backend.dataentities.JobState;
+import com.carcity.CarCity.Backend.dataentities.Jobs;
+import com.carcity.CarCity.Backend.dataentities.JobsRepo;
 import com.carcity.CarCity.Backend.dataentities.LocationProvider;
 import com.carcity.CarCity.Backend.dataentities.LocationRecord;
 import com.carcity.CarCity.Backend.dataentities.LocationRecordRepo;
 import com.carcity.CarCity.Backend.dataentities.UserTypes;
+import com.carcity.CarCity.Backend.dtos.JobDTO;
 
 @RestController
 public class ServiceProviderController {
-	
+	Logger logger = LoggerFactory.getLogger(ServiceProviderController.class);
 	@Autowired ApplicationUserRepo objApplicationUserRepo;
 	@Autowired LocationRecordRepo objLocationRecordRepo;
-	
+	@Autowired JobsRepo objJobsRepo;
+
 	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/ServiceProvider/UpdateLocation"} )
 	public ResponseEntity<?> UpdateServiceProviderLocation(@RequestHeader String sessiontoken,
 			@RequestParam double lati,
@@ -57,17 +68,44 @@ public class ServiceProviderController {
 
 
 		}
-		
+
 		//Sep 7, 2021 6:01:18 PM
-	
-	    Date date1=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse(time);  
-	    
-		
+		//18 Sep 2021 14:24:53
 
 		LocationRecord toSave=new LocationRecord();
+
+
+		try {
+			Date date1=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse(time);  
+			toSave.setTimeondevice(date1);
+
+		} catch (Exception ex) {
+			try {
+				Date date1=new SimpleDateFormat("dd MMM yyyy HH:mm:ss").parse(time); 
+				toSave.setTimeondevice(date1);
+			} catch (Exception ex2) {
+				toSave.setTimeondeviceasstring(time);
+				logger.error("SS2",ex2);
+
+			}
+			logger.error("SS1",ex);
+
+
+
+
+
+		}
+
+
+
+
+
+
+
+
 		toSave.setLati(lati);
 		toSave.setLongi(longi);
-		toSave.setTimeondevice(date1);
+
 		toSave.setOf(apu);
 		toSave.setAppstate(appstate);
 		toSave.setLocationprovider(locationprovider);
@@ -81,6 +119,155 @@ public class ServiceProviderController {
 
 
 
+
+
+
+	}
+
+	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/ServiceProvider/activateJobSearch"} )
+	public ResponseEntity<?> activatejobsearch(@RequestHeader String sessiontoken) throws ParseException {
+
+		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
+
+		if(apu==null) {
+			return ResponseEntity
+					.status(HttpStatus.METHOD_FAILURE)
+					.body("Wrong sessiontoken");
+		} else {
+
+			if(apu.getUt()==UserTypes.ServiceProvider) {
+
+			} else {
+				return ResponseEntity
+						.status(HttpStatus.METHOD_FAILURE)
+						.body("Cannot call this api for "+apu.getUt().toString());
+			}
+
+
+		}
+
+
+		apu.setJobsearchactivated(true);
+		objApplicationUserRepo.saveAndFlush(apu);
+
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body("Done");
+	}
+
+	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/ServiceProvider/deactivateJobSearch"} )
+	public ResponseEntity<?> deactivateJobSearch(@RequestHeader String sessiontoken) throws ParseException {
+
+		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
+
+		if(apu==null) {
+			return ResponseEntity
+					.status(HttpStatus.METHOD_FAILURE)
+					.body("Wrong sessiontoken");
+		} else {
+
+			if(apu.getUt()==UserTypes.ServiceProvider) {
+
+			} else {
+				return ResponseEntity
+						.status(HttpStatus.METHOD_FAILURE)
+						.body("Cannot call this api for "+apu.getUt().toString());
+			}
+
+
+		}
+
+
+		apu.setJobsearchactivated(false);
+		objApplicationUserRepo.saveAndFlush(apu);
+
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body("Done");
+	}
+
+
+	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/ServiceProvider/getAssignedJobDetails"} )
+	public ResponseEntity<?> getAssignedJobDetails(@RequestHeader String sessiontoken) throws ParseException {
+
+		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
+
+		if(apu==null) {
+			return ResponseEntity
+					.status(HttpStatus.METHOD_FAILURE)
+					.body("Wrong sessiontoken");
+		} else {
+
+			if(apu.getUt()==UserTypes.ServiceProvider) {
+
+			} else {
+				return ResponseEntity
+						.status(HttpStatus.METHOD_FAILURE)
+						.body("Cannot call this api for "+apu.getUt().toString());
+			}
+
+
+		}
+
+
+		Jobs job = objJobsRepo.findByAssignedto(apu);
+
+		if(job!=null) {
+
+			return ResponseEntity
+					.status(HttpStatus.OK)
+					.body(new JobDTO(job));
+
+		} else {
+			return ResponseEntity
+					.status(HttpStatus.METHOD_FAILURE)
+					.body("Job not found.");
+		}
+
+
+	}
+
+	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/ServiceProvider/completeAssignedJob"} )
+	public ResponseEntity<?> completeAssignedJob(@RequestHeader String sessiontoken) throws ParseException {
+
+		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
+
+		if(apu==null) {
+			return ResponseEntity
+					.status(HttpStatus.METHOD_FAILURE)
+					.body("Wrong sessiontoken");
+		} else {
+
+			if(apu.getUt()==UserTypes.ServiceProvider) {
+
+			} else {
+				return ResponseEntity
+						.status(HttpStatus.METHOD_FAILURE)
+						.body("Cannot call this api for "+apu.getUt().toString());
+			}
+
+
+		}
+		apu.setJobsearchactivated(false);
+		objApplicationUserRepo.saveAndFlush(apu);
+
+		Jobs job = objJobsRepo.findByAssignedto(apu);
+
+		if(job!=null) {
+
+			job.setAssignedto(null);
+			job.setCompletedby(apu);
+			objJobsRepo.saveAndFlush(job);
+
+			return ResponseEntity
+					.status(HttpStatus.OK)
+					.body("Done");
+
+		} else {
+			return ResponseEntity
+					.status(HttpStatus.METHOD_FAILURE)
+					.body("Job not found.");
+		}
 
 
 

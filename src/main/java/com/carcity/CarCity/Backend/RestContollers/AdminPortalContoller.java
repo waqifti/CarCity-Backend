@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.carcity.CarCity.Backend.PushNotificationUtil;
 import com.carcity.CarCity.Backend.dataentities.ApplicationUser;
 import com.carcity.CarCity.Backend.dataentities.ApplicationUserRepo;
 import com.carcity.CarCity.Backend.dataentities.JobState;
@@ -31,7 +32,7 @@ public class AdminPortalContoller {
 	@Autowired ApplicationUserRepo objApplicationUserRepo;
 	@Autowired LocationRecordRepo objLocationRecordRepo;
 	@Autowired JobsRepo objJobsRepo;
-
+	@Autowired PushNotificationUtil objPushNotificationUtil;
 
 	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/AdminPortal/changeJobInfo"} )
 	public ResponseEntity<?> changeJobInfo(@RequestHeader String sessiontoken,
@@ -142,6 +143,18 @@ public class AdminPortalContoller {
 					.status(HttpStatus.METHOD_FAILURE)
 					.body("Recipients Not Set.");
 		}
+
+		for(Long cellNo:cellnos) {
+			ApplicationUser sendTo = objApplicationUserRepo.findByCell(cellNo);
+			if(sendTo!=null) {
+				if(sendTo.getFcmtoken()!=null) {
+					objPushNotificationUtil.sendNotificationToAndroid(sendTo.getFcmtoken(),
+							"Car City", message);
+				}
+			}
+		}
+
+
 
 		return ResponseEntity
 				.status(HttpStatus.OK)

@@ -72,8 +72,15 @@ public class CarCityBackendApplication {
 		calendar.add(Calendar.HOUR_OF_DAY, hours);
 		return calendar.getTime();
 	}
-
-	//@PostConstruct
+	
+	@PostConstruct
+	public void fixed(){
+		//LocationRecord latestLocation=objLocationRecordRepo.findTopByOfOrderByTimeondeviceDesc(objApplicationUserRepo.findByCell(3238867429L));
+		
+		
+		//System.out.println(latestLocation);
+	}
+	
 	public void initjobs(){
 		List<ApplicationUser> sps= objApplicationUserRepo.findAllByUt(UserTypes.ServiceProvider);
 		List<ApplicationUser> cuss= objApplicationUserRepo.findAllByUt(UserTypes.Customer);
