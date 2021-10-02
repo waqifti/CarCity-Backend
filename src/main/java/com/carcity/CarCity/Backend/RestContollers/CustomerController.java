@@ -34,9 +34,17 @@ public class CustomerController {
 	@Autowired ApplicationUserRepo objApplicationUserRepo;
 	@Autowired LocationRecordRepo objLocationRecordRepo;
 	@Autowired JobsRepo objJobsRepo;
+	
+	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/Customer/UpdateLocation"} )
+	public ResponseEntity<?> UpdateCustomerLocation(){
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body("API DOES NOTHING");
+	}
+			
 
 	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/Customer/getJobDetails"} )
-	public ResponseEntity<?> createJobRequest(@RequestHeader String sessiontoken,
+	public ResponseEntity<?> getJobDetails(@RequestHeader String sessiontoken,
 			@RequestParam Integer jobid) throws ParseException {
 
 		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
@@ -79,8 +87,8 @@ public class CustomerController {
 
 
 
-
-					toSend.setAssignedto(toAdd);
+					toSend.setAssignedtodetails(toAdd);		
+					toSend.setAssignedto(""+job.getAssignedto().getName()+" ("+job.getAssignedto().getCell()+")");
 
 
 

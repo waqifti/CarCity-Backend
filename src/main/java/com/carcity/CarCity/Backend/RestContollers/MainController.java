@@ -57,11 +57,11 @@ public class MainController {
 					.body("Wrong sessiontoken");
 		} else {
 			List<String> jobtypes=new ArrayList<String>();
-			jobtypes.add("Job 1");
-			jobtypes.add("Job 2");
-			jobtypes.add("Job 3");
-			jobtypes.add("Job 4");
-			jobtypes.add("Job 5");
+			jobtypes.add("Wash");
+			jobtypes.add("Wax");
+			jobtypes.add("Interior Cleaning");
+			jobtypes.add("Package 1");
+			jobtypes.add("Package 2");
 
 			return ResponseEntity
 					.status(HttpStatus.OK)
@@ -85,7 +85,7 @@ public class MainController {
 	@RequestMapping(method=RequestMethod.POST,value={"/Login"} )
 	public ResponseEntity<?> Login(@RequestParam long cell,
 			@RequestParam String password,
-			@RequestParam(required=true) String fcmtoken,
+			@RequestParam(required=false) String fcmtoken,
 			@RequestParam UserTypes ut) throws Exception {
 
 		System.out.println("====Login=====");

@@ -62,10 +62,10 @@ public class SwaggerConfig  {
 
    	private ApiInfo api1info() {
 
-   		return new ApiInfoBuilder().title("Track")
-   				.description("Track")
-   				.contact(new Contact("Iftekhar Ahmed", "author", "iftekhar@nullbrainer.io"))
-   				.license("Track All rights reserved")
+   		return new ApiInfoBuilder().title("Car City")
+   				.description("Car City")
+   				.contact(new Contact("Waqas Faheem", "author", "vickyshah29@gmail.com"))
+   				.license("All rights reserved")
    				.version("1.0.0")
    				.build();
    	}

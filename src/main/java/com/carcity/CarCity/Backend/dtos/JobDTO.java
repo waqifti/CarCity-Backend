@@ -21,7 +21,7 @@ public class JobDTO {
 
 	private int id;
 
-
+	
 
 	private String dbentryat;
 
@@ -38,9 +38,9 @@ public class JobDTO {
 	private String notes;
 
 
-
-	
-	private ServiceProviderUserDTO assignedto;
+	private String createdby;
+	private String assignedto;
+	private ServiceProviderUserDTO assignedtodetails;
 	
 	
 	private String managedby;
@@ -58,17 +58,25 @@ public class JobDTO {
 
 		this.longi=j.getLongi();
 		this.lati=j.getLati();
-
+		this.createdby= ""+j.getCreatedby().getName()+" ("+j.getCreatedby().getCell()+")";
 		
 
 		if(j.getManagedby()!=null) {
-			this.managedby= ""+j.getManagedby().getCell()+" ("+j.getManagedby().getUt().toString()+")";
+			this.managedby= ""+j.getManagedby().getName()+" ("+j.getManagedby().getUt().toString()+")";
 		} else {
 			this.managedby= "Not managed by anyone yet.";
 		}
 
 
 
+	}
+
+	public String getCreatedby() {
+		return createdby;
+	}
+
+	public void setCreatedby(String createdby) {
+		this.createdby = createdby;
 	}
 
 	public int getId() {
@@ -155,15 +163,23 @@ public class JobDTO {
 		this.notes = notes;
 	}
 
-	public ServiceProviderUserDTO getAssignedto() {
+	public String getAssignedto() {
 		return assignedto;
 	}
 
-	public void setAssignedto(ServiceProviderUserDTO assignedto) {
+	public void setAssignedto(String assignedto) {
 		this.assignedto = assignedto;
 	}
 
+	public ServiceProviderUserDTO getAssignedtodetails() {
+		return assignedtodetails;
+	}
 
+	public void setAssignedtodetails(ServiceProviderUserDTO assignedtodetails) {
+		this.assignedtodetails = assignedtodetails;
+	}
+
+	
 
 	
 

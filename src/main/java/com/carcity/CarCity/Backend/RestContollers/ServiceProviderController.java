@@ -29,6 +29,7 @@ import com.carcity.CarCity.Backend.dataentities.LocationRecord;
 import com.carcity.CarCity.Backend.dataentities.LocationRecordRepo;
 import com.carcity.CarCity.Backend.dataentities.UserTypes;
 import com.carcity.CarCity.Backend.dtos.JobDTO;
+import com.carcity.CarCity.Backend.dtos.ServiceProviderUserDTO;
 
 @RestController
 public class ServiceProviderController {
@@ -213,10 +214,29 @@ public class ServiceProviderController {
 		Jobs job = objJobsRepo.findByAssignedto(apu);
 
 		if(job!=null) {
+			JobDTO toSend= new JobDTO(job);
+			if(job.getAssignedto()!=null) {
+				ServiceProviderUserDTO toAdd=new ServiceProviderUserDTO();
+				toAdd.setCell(job.getAssignedto().getCell());
 
+				LocationRecord latestLocation=objLocationRecordRepo.findTopByOfOrderByTimeondeviceDesc(job.getAssignedto());
+				if(latestLocation!=null) {
+					toAdd.setCurrentlati(latestLocation.getLati());
+					toAdd.setCurrentlongi(latestLocation.getLongi());
+				}
+
+
+
+				toSend.setAssignedtodetails(toAdd);		
+				toSend.setAssignedto(""+job.getAssignedto().getName()+" ("+job.getAssignedto().getCell()+")");
+
+
+
+
+			} 
 			return ResponseEntity
 					.status(HttpStatus.OK)
-					.body(new JobDTO(job));
+					.body(toSend);
 
 		} else {
 			return ResponseEntity

@@ -37,8 +37,8 @@ public class AdminPortalContoller {
 	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/AdminPortal/changeJobInfo"} )
 	public ResponseEntity<?> changeJobInfo(@RequestHeader String sessiontoken,
 			@RequestParam int jobid,
-			@RequestParam(required=false) int assignedto,
-			@RequestParam(required=true) JobState newstate) throws Exception {
+			@RequestParam(required=false) Integer assignedto,
+			@RequestParam(required=false) JobState newstate) throws Exception {
 
 		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
 
@@ -58,17 +58,40 @@ public class AdminPortalContoller {
 
 
 		}
-		ApplicationUser sp=objApplicationUserRepo.getOne(assignedto);
-		if(sp==null || sp.getUt()!=UserTypes.ServiceProvider) {
-			return ResponseEntity
-					.status(HttpStatus.METHOD_FAILURE)
-					.body("Assigned to must be sp");
-		}
-
-
+		
 		Jobs job = objJobsRepo.getById(jobid);
-		job.setState(newstate);
-		job.setAssignedto(sp);
+		
+		if(assignedto!=null) {
+			ApplicationUser sp=objApplicationUserRepo.getOne(assignedto);
+			if(sp==null || sp.getUt()!=UserTypes.ServiceProvider) {
+				return ResponseEntity
+						.status(HttpStatus.METHOD_FAILURE)
+						.body("Assigned to must be sp");
+			}
+			job.setAssignedto(sp);
+			
+			
+			if(sp.getFcmtoken()!=null) {
+				objPushNotificationUtil.sendNotificationToAndroid(sp.getFcmtoken(), "Car City", "Ap ko ek new job dey di gaye hay. Mazeed janey key liye Car City ki application kholien.");
+			}
+			
+			if(apu.getFcmtoken()!=null) {
+				objPushNotificationUtil.sendNotificationToAndroid(apu.getFcmtoken(), "Car City", "Ap ko ek service provider assign kurdiya gya hay. Mazeed janey key liye Car City ki application kholien.");
+			}
+			
+			
+			
+		}
+		
+		if(newstate!=null) {
+			job.setState(newstate);
+		}
+		
+
+
+		
+		
+		
 		objJobsRepo.saveAndFlush(job);
 
 		return ResponseEntity
