@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.carcity.CarCity.Backend.dtos.MessageResponce;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,12 +36,7 @@ public class CustomerController {
 	@Autowired LocationRecordRepo objLocationRecordRepo;
 	@Autowired JobsRepo objJobsRepo;
 	
-	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/Customer/UpdateLocation"} )
-	public ResponseEntity<?> UpdateCustomerLocation(){
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.body("API DOES NOTHING");
-	}
+
 			
 
 	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/Customer/getJobDetails"} )
@@ -52,7 +48,7 @@ public class CustomerController {
 		if(apu==null) {
 			return ResponseEntity
 					.status(HttpStatus.METHOD_FAILURE)
-					.body("Wrong sessiontoken");
+					.body(new MessageResponce("Wrong sessiontoken"));
 		} else {
 
 			if(apu.getUt()==UserTypes.Customer) {
@@ -60,7 +56,7 @@ public class CustomerController {
 			} else {
 				return ResponseEntity
 						.status(HttpStatus.METHOD_FAILURE)
-						.body("Cannot call this api for "+apu.getUt().toString());
+						.body(new MessageResponce("Cannot call this api for "+apu.getUt().toString()));
 			}
 
 
@@ -100,12 +96,12 @@ public class CustomerController {
 			} else {
 				return ResponseEntity
 						.status(HttpStatus.METHOD_FAILURE)
-						.body("Not your Job.");
+						.body(new MessageResponce("Not your Job."));
 			}
 		} else {
 			return ResponseEntity
 					.status(HttpStatus.METHOD_FAILURE)
-					.body("Job not found.");
+					.body(new MessageResponce("Job not found."));
 		}
 
 
@@ -125,7 +121,7 @@ public class CustomerController {
 		if(apu==null) {
 			return ResponseEntity
 					.status(HttpStatus.METHOD_FAILURE)
-					.body("Wrong sessiontoken");
+					.body(new MessageResponce("Wrong sessiontoken"));
 		} else {
 
 			if(apu.getUt()==UserTypes.Customer) {
@@ -133,7 +129,7 @@ public class CustomerController {
 			} else {
 				return ResponseEntity
 						.status(HttpStatus.METHOD_FAILURE)
-						.body("Cannot call this api for "+apu.getUt().toString());
+						.body(new MessageResponce("Cannot call this api for "+apu.getUt().toString()));
 			}
 
 
@@ -181,7 +177,7 @@ public class CustomerController {
 
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(newJob.getId());
+				.body(new MessageResponce(newJob.getId()+""));
 	}
 
 

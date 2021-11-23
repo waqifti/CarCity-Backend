@@ -1,9 +1,12 @@
 package com.carcity.CarCity.Backend.RestContollers;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import com.carcity.CarCity.Backend.dtos.MessageResponce;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -237,7 +240,7 @@ public class AdminPortalContoller {
 		if(apu==null) {
 			return ResponseEntity
 					.status(HttpStatus.METHOD_FAILURE)
-					.body("Wrong sessiontoken");
+					.body(new MessageResponce("Wrong sessiontoken"));
 		} else {
 
 			if(apu.getUt()==UserTypes.AdminPortal) {
@@ -245,7 +248,7 @@ public class AdminPortalContoller {
 			} else {
 				return ResponseEntity
 						.status(HttpStatus.METHOD_FAILURE)
-						.body("Cannot call this api for "+apu.getUt().toString());
+						.body(new MessageResponce("Cannot call this api for "+apu.getUt().toString()));
 			}
 
 
@@ -276,14 +279,25 @@ public class AdminPortalContoller {
 
 	@RequestMapping(method=RequestMethod.GET,value={"/Authenticated/AdminPortal/GetUsersRecordedLocations"} )
 	public ResponseEntity<?> GetUsersRecordedLocations(@RequestHeader String sessiontoken,
-			long cell) throws Exception {
+			long cell,
+													   @RequestParam String starttime,
+													   @RequestParam String endtime) throws Exception {
+		try {
+			Date ss=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse(starttime);
+			Date ee=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse(endtime);
+		} catch (Exception ex){
+			return ResponseEntity
+					.status(HttpStatus.METHOD_FAILURE)
+					.body(new MessageResponce("DATE/TIME FORMAT ERROR"));
+		}
+
 
 		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
 
 		if(apu==null) {
 			return ResponseEntity
 					.status(HttpStatus.METHOD_FAILURE)
-					.body("Wrong sessiontoken");
+					.body(new MessageResponce("Wrong sessiontoken"));
 		} else {
 
 			if(apu.getUt()==UserTypes.AdminPortal) {
@@ -291,7 +305,7 @@ public class AdminPortalContoller {
 			} else {
 				return ResponseEntity
 						.status(HttpStatus.METHOD_FAILURE)
-						.body("Cannot call this api for "+apu.getUt().toString());
+						.body(new MessageResponce("Cannot call this api for "+apu.getUt().toString()));
 			}
 
 
@@ -299,6 +313,11 @@ public class AdminPortalContoller {
 
 		ApplicationUser sp=objApplicationUserRepo.findByCell(cell);
 
+		if(sp==null){
+			return ResponseEntity
+					.status(HttpStatus.METHOD_FAILURE)
+					.body(new MessageResponce("cell no not found"));
+		}
 
 		List<LocationRecord> locations = objLocationRecordRepo.findAllByOf(sp);
 

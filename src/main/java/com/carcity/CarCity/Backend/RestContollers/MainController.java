@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.carcity.CarCity.Backend.dtos.LoginResponce;
+import com.carcity.CarCity.Backend.dtos.MessageResponce;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,14 +108,14 @@ public class MainController {
 
 				} else {
 					return ResponseEntity
-							.status(HttpStatus.METHOD_FAILURE)
-							.body("Please specify correct ut.");
+							.status(HttpStatus.UNAUTHORIZED)
+							.body(new MessageResponce("Please specify correct ut."));
 				}
 
 			} else {
 				return ResponseEntity
-						.status(HttpStatus.METHOD_FAILURE)
-						.body("Wrong password");
+						.status(HttpStatus.UNAUTHORIZED)
+						.body(new MessageResponce("Wrong password"));
 			}
 		}
 		
@@ -134,7 +136,7 @@ public class MainController {
 
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(apu.getSessiontoken());
+				.body(new LoginResponce(apu.getSessiontoken()));
 
 
 

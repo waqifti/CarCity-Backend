@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.carcity.CarCity.Backend.dtos.MessageResponce;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,7 @@ public class ServiceProviderController {
 		if(apu==null) {
 			return ResponseEntity
 					.status(HttpStatus.METHOD_FAILURE)
-					.body("Wrong sessiontoken");
+					.body(new MessageResponce("Wrong sessiontoken"));
 		} else {
 
 			if(apu.getUt()==UserTypes.ServiceProvider) {
@@ -64,7 +65,7 @@ public class ServiceProviderController {
 			} else {
 				return ResponseEntity
 						.status(HttpStatus.METHOD_FAILURE)
-						.body("Cannot call this api for "+apu.getUt().toString());
+						.body(new MessageResponce("Cannot call this api for "+apu.getUt().toString()));
 			}
 
 
@@ -116,7 +117,7 @@ public class ServiceProviderController {
 
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body("");
+				.body(new MessageResponce("ok"));
 
 
 
@@ -133,7 +134,7 @@ public class ServiceProviderController {
 		if(apu==null) {
 			return ResponseEntity
 					.status(HttpStatus.METHOD_FAILURE)
-					.body("Wrong sessiontoken");
+					.body(new MessageResponce("Wrong sessiontoken"));
 		} else {
 
 			if(apu.getUt()==UserTypes.ServiceProvider) {
@@ -141,7 +142,7 @@ public class ServiceProviderController {
 			} else {
 				return ResponseEntity
 						.status(HttpStatus.METHOD_FAILURE)
-						.body("Cannot call this api for "+apu.getUt().toString());
+						.body(new MessageResponce("Cannot call this api for "+apu.getUt().toString()));
 			}
 
 
@@ -153,7 +154,7 @@ public class ServiceProviderController {
 
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body("Done");
+				.body(new MessageResponce("Done"));
 	}
 
 	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/ServiceProvider/deactivateJobSearch"} )
@@ -164,7 +165,7 @@ public class ServiceProviderController {
 		if(apu==null) {
 			return ResponseEntity
 					.status(HttpStatus.METHOD_FAILURE)
-					.body("Wrong sessiontoken");
+					.body(new MessageResponce("Wrong sessiontoken"));
 		} else {
 
 			if(apu.getUt()==UserTypes.ServiceProvider) {
@@ -172,7 +173,7 @@ public class ServiceProviderController {
 			} else {
 				return ResponseEntity
 						.status(HttpStatus.METHOD_FAILURE)
-						.body("Cannot call this api for "+apu.getUt().toString());
+						.body(new MessageResponce("Cannot call this api for "+apu.getUt().toString()));
 			}
 
 
@@ -184,7 +185,7 @@ public class ServiceProviderController {
 
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body("Done");
+				.body(new MessageResponce("Done"));
 	}
 
 
@@ -196,7 +197,7 @@ public class ServiceProviderController {
 		if(apu==null) {
 			return ResponseEntity
 					.status(HttpStatus.METHOD_FAILURE)
-					.body("Wrong sessiontoken");
+					.body(new MessageResponce("Wrong sessiontoken"));
 		} else {
 
 			if(apu.getUt()==UserTypes.ServiceProvider) {
@@ -204,7 +205,7 @@ public class ServiceProviderController {
 			} else {
 				return ResponseEntity
 						.status(HttpStatus.METHOD_FAILURE)
-						.body("Cannot call this api for "+apu.getUt().toString());
+						.body(new MessageResponce("Cannot call this api for "+apu.getUt().toString()));
 			}
 
 
@@ -241,7 +242,7 @@ public class ServiceProviderController {
 		} else {
 			return ResponseEntity
 					.status(HttpStatus.METHOD_FAILURE)
-					.body("Job not found.");
+					.body(new MessageResponce("Job not found."));
 		}
 
 
@@ -255,7 +256,7 @@ public class ServiceProviderController {
 		if(apu==null) {
 			return ResponseEntity
 					.status(HttpStatus.METHOD_FAILURE)
-					.body("Wrong sessiontoken");
+					.body(new MessageResponce("Wrong sessiontoken"));
 		} else {
 
 			if(apu.getUt()==UserTypes.ServiceProvider) {
@@ -263,7 +264,7 @@ public class ServiceProviderController {
 			} else {
 				return ResponseEntity
 						.status(HttpStatus.METHOD_FAILURE)
-						.body("Cannot call this api for "+apu.getUt().toString());
+						.body(new MessageResponce("Cannot call this api for "+apu.getUt().toString()));
 			}
 
 
@@ -281,12 +282,12 @@ public class ServiceProviderController {
 
 			return ResponseEntity
 					.status(HttpStatus.OK)
-					.body("Done");
+					.body(new MessageResponce("Done"));
 
 		} else {
 			return ResponseEntity
 					.status(HttpStatus.METHOD_FAILURE)
-					.body("Job not found.");
+					.body(new MessageResponce("Job not found."));
 		}
 
 
