@@ -324,7 +324,14 @@ public class AdminPortalContoller {
 
 		List<LocationDTO> toReturn = new ArrayList<LocationDTO>();
 		for(LocationRecord i:locations) {
-			toReturn.add(new LocationDTO(i));
+			Date ss=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse(starttime);
+			Date ee=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse(endtime);
+
+			if(i.getTimeondevice().after(ss) && i.getTimeondevice().before(ee)){
+				toReturn.add(new LocationDTO(i));
+			}
+
+
 		}
 
 
