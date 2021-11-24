@@ -2,20 +2,18 @@ package com.carcity.CarCity.Backend.RestContollers;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.carcity.CarCity.Backend.dtos.MessageResponce;
+import com.carcity.CarCity.Backend.dtos.UserSettingPTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.carcity.CarCity.Backend.dataentities.AppState;
 import com.carcity.CarCity.Backend.dataentities.ApplicationUser;
@@ -35,7 +33,78 @@ public class CustomerController {
 	@Autowired ApplicationUserRepo objApplicationUserRepo;
 	@Autowired LocationRecordRepo objLocationRecordRepo;
 	@Autowired JobsRepo objJobsRepo;
-	
+
+
+	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/Customer/updateProfileInfo"} )
+	public ResponseEntity<?> updateProfileInfo(@RequestHeader String sessiontoken,
+											   @RequestBody List<UserSettingPTO> settings) throws ParseException {
+		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
+
+		if(apu==null) {
+			return ResponseEntity
+					.status(HttpStatus.METHOD_FAILURE)
+					.body(new MessageResponce("Wrong sessiontoken"));
+		} else {
+
+			if(apu.getUt()==UserTypes.Customer) {
+
+			} else {
+				return ResponseEntity
+						.status(HttpStatus.METHOD_FAILURE)
+						.body(new MessageResponce("Cannot call this api for "+apu.getUt().toString()));
+			}
+
+
+		}
+
+
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(new MessageResponce("Done"));
+
+	}
+
+
+	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/Customer/getProfileInfo"} )
+	public ResponseEntity<?> getProfileInfo(@RequestHeader String sessiontoken) throws ParseException {
+		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
+
+		if(apu==null) {
+			return ResponseEntity
+					.status(HttpStatus.METHOD_FAILURE)
+					.body(new MessageResponce("Wrong sessiontoken"));
+		} else {
+
+			if(apu.getUt()==UserTypes.Customer) {
+
+			} else {
+				return ResponseEntity
+						.status(HttpStatus.METHOD_FAILURE)
+						.body(new MessageResponce("Cannot call this api for "+apu.getUt().toString()));
+			}
+
+
+		}
+
+		UserSettingPTO set1=new UserSettingPTO();
+		set1.setSettingname("Managed By");
+		for(ApplicationUser aii:objApplicationUserRepo.findAllByUt(UserTypes.AdminPortal)){
+			set1.getSelectablevalues().add(aii.getCell()+"");
+		}
+
+		UserSettingPTO set2=new UserSettingPTO();
+		set2.setSettingname("Your Name");
+
+
+		List<UserSettingPTO> settings=new ArrayList<UserSettingPTO>();
+		settings.add(set1);
+		settings.add(set2);
+
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(settings);
+
+	}
 
 			
 
