@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.carcity.CarCity.Backend.dataentities.*;
 import com.carcity.CarCity.Backend.dtos.MessageResponce;
 import com.carcity.CarCity.Backend.dtos.UserSettingPTO;
 import org.slf4j.Logger;
@@ -17,16 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.carcity.CarCity.Backend.dataentities.AppState;
-import com.carcity.CarCity.Backend.dataentities.ApplicationUser;
-import com.carcity.CarCity.Backend.dataentities.ApplicationUserRepo;
-import com.carcity.CarCity.Backend.dataentities.JobState;
-import com.carcity.CarCity.Backend.dataentities.Jobs;
-import com.carcity.CarCity.Backend.dataentities.JobsRepo;
-import com.carcity.CarCity.Backend.dataentities.LocationProvider;
-import com.carcity.CarCity.Backend.dataentities.LocationRecord;
-import com.carcity.CarCity.Backend.dataentities.LocationRecordRepo;
-import com.carcity.CarCity.Backend.dataentities.UserTypes;
 import com.carcity.CarCity.Backend.dtos.JobDTO;
 import com.carcity.CarCity.Backend.dtos.ServiceProviderUserDTO;
 
@@ -36,6 +27,9 @@ public class ServiceProviderController {
 	@Autowired ApplicationUserRepo objApplicationUserRepo;
 	@Autowired LocationRecordRepo objLocationRecordRepo;
 	@Autowired JobsRepo objJobsRepo;
+
+	@Autowired
+	ApplicationUserSettingsRepo objApplicationUserSettingsRepo;
 
 	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/ServiceProvider/updateProfileInfo"} )
 	public ResponseEntity<?> updateProfileInfo(@RequestHeader String sessiontoken,
@@ -59,6 +53,20 @@ public class ServiceProviderController {
 
 		}
 
+		if(settings!=null && settings.size()>0){
+			for(UserSettingPTO i:settings){
+				ApplicationUserSettings objApplicationUserSettings=objApplicationUserSettingsRepo
+						.findAllByUserAndSettingname(apu,i.getSettingname());
+
+				if(objApplicationUserSettings==null){
+					objApplicationUserSettings.setSettingname(i.getSettingname());
+					objApplicationUserSettings.setUser(apu);
+				}
+
+				objApplicationUserSettings.setSettingvalue(i.getSelectedvalue());
+				objApplicationUserSettingsRepo.saveAndFlush(objApplicationUserSettings);
+			}
+		}
 
 		return ResponseEntity
 				.status(HttpStatus.OK)

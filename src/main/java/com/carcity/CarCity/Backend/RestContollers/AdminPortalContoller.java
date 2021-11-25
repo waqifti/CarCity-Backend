@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import com.carcity.CarCity.Backend.dataentities.*;
 import com.carcity.CarCity.Backend.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,14 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.carcity.CarCity.Backend.PushNotificationUtil;
-import com.carcity.CarCity.Backend.dataentities.ApplicationUser;
-import com.carcity.CarCity.Backend.dataentities.ApplicationUserRepo;
-import com.carcity.CarCity.Backend.dataentities.JobState;
-import com.carcity.CarCity.Backend.dataentities.Jobs;
-import com.carcity.CarCity.Backend.dataentities.JobsRepo;
-import com.carcity.CarCity.Backend.dataentities.LocationRecord;
-import com.carcity.CarCity.Backend.dataentities.LocationRecordRepo;
-import com.carcity.CarCity.Backend.dataentities.UserTypes;
 
 @RestController
 public class AdminPortalContoller {
@@ -30,6 +23,9 @@ public class AdminPortalContoller {
 	@Autowired LocationRecordRepo objLocationRecordRepo;
 	@Autowired JobsRepo objJobsRepo;
 	@Autowired PushNotificationUtil objPushNotificationUtil;
+
+	@Autowired
+	ApplicationUserSettingsRepo objApplicationUserSettingsRepo;
 
 	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/AdminPortal/updateProfileInfo"} )
 	public ResponseEntity<?> updateProfileInfo(@RequestHeader String sessiontoken,
@@ -51,6 +47,21 @@ public class AdminPortalContoller {
 			}
 
 
+		}
+
+		if(settings!=null && settings.size()>0){
+			for(UserSettingPTO i:settings){
+					ApplicationUserSettings objApplicationUserSettings=objApplicationUserSettingsRepo
+							.findAllByUserAndSettingname(apu,i.getSettingname());
+
+					if(objApplicationUserSettings==null){
+						objApplicationUserSettings.setSettingname(i.getSettingname());
+						objApplicationUserSettings.setUser(apu);
+					}
+
+				objApplicationUserSettings.setSettingvalue(i.getSelectedvalue());
+				objApplicationUserSettingsRepo.saveAndFlush(objApplicationUserSettings);
+			}
 		}
 
 
