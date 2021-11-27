@@ -25,6 +25,7 @@ public class CustomerController {
 	ApplicationUserSettingsRepo objApplicationUserSettingsRepo;
 
 
+
 	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/Customer/updateProfileInfo"} )
 	public ResponseEntity<?> updateProfileInfo(@RequestHeader String sessiontoken,
 											   @RequestBody UserSettingInDO obj) throws ParseException {
