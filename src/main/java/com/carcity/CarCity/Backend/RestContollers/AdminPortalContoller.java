@@ -29,7 +29,7 @@ public class AdminPortalContoller {
 
 	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/AdminPortal/updateProfileInfo"} )
 	public ResponseEntity<?> updateProfileInfo(@RequestHeader String sessiontoken,
-											   @RequestBody List<UserSettingPTO> settings) throws ParseException {
+											   @RequestBody UserSettingInDO obj) throws ParseException {
 		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
 
 		if(apu==null) {
@@ -49,8 +49,9 @@ public class AdminPortalContoller {
 
 		}
 
-		if(settings!=null && settings.size()>0){
-			for(UserSettingPTO i:settings){
+		if(obj!=null &&  obj.getSettings()!=null && obj.getSettings().size()>0){
+			for(UserSettingPTO i:obj.getSettings()){
+
 					ApplicationUserSettings objApplicationUserSettings=objApplicationUserSettingsRepo
 							.findAllByUserAndSettingname(apu,i.getSettingname());
 

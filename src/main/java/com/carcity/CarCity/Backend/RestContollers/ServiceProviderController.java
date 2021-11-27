@@ -9,17 +9,13 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.carcity.CarCity.Backend.dataentities.*;
-import com.carcity.CarCity.Backend.dtos.MessageResponce;
-import com.carcity.CarCity.Backend.dtos.UserSettingPTO;
+import com.carcity.CarCity.Backend.dtos.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.carcity.CarCity.Backend.dtos.JobDTO;
-import com.carcity.CarCity.Backend.dtos.ServiceProviderUserDTO;
 
 @RestController
 public class ServiceProviderController {
@@ -33,7 +29,7 @@ public class ServiceProviderController {
 
 	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/ServiceProvider/updateProfileInfo"} )
 	public ResponseEntity<?> updateProfileInfo(@RequestHeader String sessiontoken,
-											   @RequestBody List<UserSettingPTO> settings) throws ParseException {
+											   @RequestBody UserSettingInDO obj) throws ParseException {
 		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
 
 		if(apu==null) {
@@ -53,8 +49,9 @@ public class ServiceProviderController {
 
 		}
 
-		if(settings!=null && settings.size()>0){
-			for(UserSettingPTO i:settings){
+		if(obj!=null &&  obj.getSettings()!=null && obj.getSettings().size()>0){
+			for(UserSettingPTO i:obj.getSettings()){
+
 				ApplicationUserSettings objApplicationUserSettings=objApplicationUserSettingsRepo
 						.findAllByUserAndSettingname(apu,i.getSettingname());
 
