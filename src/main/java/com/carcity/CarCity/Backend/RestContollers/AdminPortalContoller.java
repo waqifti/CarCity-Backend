@@ -55,6 +55,7 @@ public class AdminPortalContoller {
 							.findAllByUserAndSettingname(apu,i.getSettingname());
 
 					if(objApplicationUserSettings==null){
+						objApplicationUserSettings = new ApplicationUserSettings();
 						objApplicationUserSettings.setSettingname(i.getSettingname());
 						objApplicationUserSettings.setUser(apu);
 					}
@@ -94,13 +95,31 @@ public class AdminPortalContoller {
 		}
 
 
-		UserSettingPTO set2=new UserSettingPTO();
-		set2.setSettingname("Your Name");
-
+		List<ApplicationUserSettings> saveSettings=objApplicationUserSettingsRepo.findAllByUser(apu);
 
 		List<UserSettingPTO> settings=new ArrayList<UserSettingPTO>();
 
-		settings.add(set2);
+		if(saveSettings==null || saveSettings.size()==0){
+
+
+			UserSettingPTO set2=new UserSettingPTO();
+			set2.setSettingname("Your Name");
+
+
+
+
+			settings.add(set2);
+		} else {
+			for(ApplicationUserSettings vr:saveSettings){
+				UserSettingPTO set1=new UserSettingPTO();
+				set1.setSettingname(vr.getSettingname());
+				set1.setSelectedvalue(vr.getSettingvalue());
+
+
+
+				settings.add(set1);
+			}
+		}
 
 		return ResponseEntity
 				.status(HttpStatus.OK)
