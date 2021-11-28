@@ -50,34 +50,39 @@ public class JobsManager implements DisposableBean, Runnable {
 
                                 if(spsAlreadyBusy!=null && spsAlreadyBusy.size()>0){
                                     System.out.println("List Of All Sps That Are busy = "+spsAlreadyBusy.toString());
+                                    spIds.removeAll(spsAlreadyBusy);
+                                    System.out.println("List Of All Sps That Are avaialble = "+spIds.toString());
+
                                 } else {
 
-                                    ApplicationUser toAssign= objApplicationUserRepo.getById(spIds.iterator().next());
-                                    i.setAssignedto(toAssign);
-                                    i.setState(JobState.JOB_ASSIGNED_TO_SP);
-                                    objJobsRepo.saveAndFlush(i);
-                                    System.out.println("Assigned "+toAssign.getCell());
-                                    if(i.getCreatedby().getFcmtoken()!=null && !i.getCreatedby().getFcmtoken().trim().isEmpty()) {
-                                        try {
-                                            objPushNotificationUtil.sendNotificationToAndroid(i.getCreatedby().getFcmtoken(),
-                                                    "Car City",
-                                                    "Aap ko sp assign kur diya gya hay.");
-                                        } catch (Exception ex) {
 
-                                        }
+                                }
+
+                                ApplicationUser toAssign = objApplicationUserRepo.getById(spIds.iterator().next());
+                                i.setAssignedto(toAssign);
+                                i.setState(JobState.JOB_ASSIGNED_TO_SP);
+                                objJobsRepo.saveAndFlush(i);
+                                System.out.println("Assigned "+toAssign.getCell());
+                                if(i.getCreatedby().getFcmtoken()!=null && !i.getCreatedby().getFcmtoken().trim().isEmpty()) {
+                                    try {
+                                        objPushNotificationUtil.sendNotificationToAndroid(i.getCreatedby().getFcmtoken(),
+                                                "Car City",
+                                                "Aap ko sp assign kur diya gya hay.");
+                                    } catch (Exception ex) {
+
+                                    }
+
+                                }
+
+                                if(i.getAssignedto().getFcmtoken()!=null && !i.getAssignedto().getFcmtoken().trim().isEmpty()) {
+                                    try {
+                                        objPushNotificationUtil.sendNotificationToAndroid(i.getAssignedto().getFcmtoken(),
+                                                "Car City",
+                                                "Aap ko new job kur di gye hay.");
+                                    } catch (Exception ex) {
 
                                     }
 
-                                    if(i.getAssignedto().getFcmtoken()!=null && !i.getAssignedto().getFcmtoken().trim().isEmpty()) {
-                                        try {
-                                            objPushNotificationUtil.sendNotificationToAndroid(i.getAssignedto().getFcmtoken(),
-                                                    "Car City",
-                                                    "Aap ko new job kur di gye hay.");
-                                        } catch (Exception ex) {
-
-                                        }
-
-                                    }
                                 }
 
                             } else {
