@@ -237,7 +237,6 @@ public class CustomerController {
 	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/Customer/createJobRequest"} )
 	public ResponseEntity<?> createJobRequest(@RequestHeader String sessiontoken,
 			@RequestParam HashSet<String> jobtypes,
-			@RequestParam String description,
 			@RequestParam double lati,
 			@RequestParam double longi,
 			@RequestParam(required=false) String scheduledAt) throws ParseException {
@@ -276,7 +275,7 @@ public class CustomerController {
 		Jobs newJob = new Jobs();
 		newJob.setCreatedby(apu);
 		newJob.setJobtypes(jobtypes);
-		newJob.setDescription(description);
+
 		//newJob.setNotes(notes);
 		newJob.setLati(lati);
 		newJob.setLongi(longi);

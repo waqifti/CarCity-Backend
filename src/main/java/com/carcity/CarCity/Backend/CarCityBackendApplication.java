@@ -2,11 +2,7 @@ package com.carcity.CarCity.Backend;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.annotation.PostConstruct;
@@ -75,6 +71,8 @@ public class CarCityBackendApplication {
 	
 	@PostConstruct
 	public void fixed(){
+
+
 		//LocationRecord latestLocation=objLocationRecordRepo.findTopByOfOrderByTimeondeviceDesc(objApplicationUserRepo.findByCell(3238867429L));
 		
 		

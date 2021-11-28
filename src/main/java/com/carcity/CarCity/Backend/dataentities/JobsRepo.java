@@ -17,6 +17,6 @@ public interface JobsRepo extends JpaRepository<Jobs,Integer> {
 	List<Jobs> findAllByCreatedbyAndStateIn(ApplicationUser customer,List<JobState> states);
 	List<Jobs> findAllByState(JobState js);
 
-	@Query("select j.assignedto.id from Jobs j")
+	@Query("select j.assignedto.id from Jobs j where j.assignedto is not null")
 	Set<Integer> getIdsOfAssignedUsers();
 }
