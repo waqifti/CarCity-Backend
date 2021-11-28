@@ -238,8 +238,10 @@ public class CustomerController {
 	public ResponseEntity<?> createJobRequest(@RequestHeader String sessiontoken,
 			@RequestParam HashSet<String> jobtypes,
 			@RequestParam double lati,
-			@RequestParam double longi,
-			@RequestParam(required=false) String scheduledAt) throws ParseException {
+			@RequestParam double longi
+			) throws ParseException {
+
+		String scheduledAt = null;
 
 		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
 
