@@ -82,7 +82,30 @@ public class MainController {
 
 
 	}
+	@RequestMapping(method=RequestMethod.POST,value={"/Logout"} )
+	public ResponseEntity<?> Logout(@RequestHeader String sessiontoken) throws Exception {
 
+
+		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
+		if(apu!=null){
+			apu.setSessiontoken(null);
+			apu.setFcmtoken(null);
+
+			objApplicationUserRepo.saveAndFlush(apu);
+		}
+
+
+
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(new MessageResponce("Done"));
+
+
+
+
+
+
+	}
 
 	@RequestMapping(method=RequestMethod.POST,value={"/Login"} )
 	public ResponseEntity<?> Login(@RequestParam long cell,

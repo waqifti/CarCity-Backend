@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.carcity.CarCity.Backend.PushNotificationUtil;
 import com.carcity.CarCity.Backend.dataentities.*;
 import com.carcity.CarCity.Backend.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class CustomerController {
 
 	@Autowired
 	ApplicationUserSettingsRepo objApplicationUserSettingsRepo;
+
+	@Autowired
+	PushNotificationUtil objPushNotificationUtil;
 
 
 
@@ -124,11 +128,48 @@ public class CustomerController {
 
 	}
 
-			
+	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/Customer/cancelAllMyJobs"} )
+	public ResponseEntity<?> cancelAllMyJobs(@RequestHeader String sessiontoken) throws ParseException {
+		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
+
+		if(apu==null) {
+			return ResponseEntity
+					.status(HttpStatus.METHOD_FAILURE)
+					.body(new MessageResponce("Wrong sessiontoken"));
+		} else {
+
+			if(apu.getUt()==UserTypes.Customer) {
+
+			} else {
+				return ResponseEntity
+						.status(HttpStatus.METHOD_FAILURE)
+						.body(new MessageResponce("Cannot call this api for "+apu.getUt().toString()));
+			}
+
+
+		}
+
+
+		List<Jobs> jobs = objJobsRepo.findAllByCreatedbyStateIn(apu,
+				JobState.NEW_JOB_SCHEDULED_LATER,
+				JobState.NEW_JOB_WANTS_SERVICE_NOW,
+				JobState.JOB_ASSIGNED_TO_SP);
+
+		if(jobs!=null){
+			for(Jobs j:jobs){
+				j.setState(JobState.CANCEL_BY_CUSTOMER);
+				objJobsRepo.saveAndFlush(j);
+			}
+		}
+
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(new MessageResponce("Done"));
+
+	}
 
 	@RequestMapping(method=RequestMethod.POST,value={"/Authenticated/Customer/getJobDetails"} )
-	public ResponseEntity<?> getJobDetails(@RequestHeader String sessiontoken,
-			@RequestParam Integer jobid) throws ParseException {
+	public ResponseEntity<?> getJobDetails(@RequestHeader String sessiontoken) throws ParseException {
 
 		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
 
@@ -150,46 +191,47 @@ public class CustomerController {
 		}
 
 
-		Jobs job = objJobsRepo.getById(jobid);
+		Jobs job = objJobsRepo.findByCreatedbyStateIn(apu,
+				JobState.NEW_JOB_SCHEDULED_LATER,
+				JobState.NEW_JOB_WANTS_SERVICE_NOW,
+				JobState.JOB_ASSIGNED_TO_SP);
 
-		if(job!=null) {
-			if(job.getCreatedby().getId()==apu.getId()) {
+		if(job!=null){
+			JobDTO toSend=new JobDTO(job);
 
+			if(job.getAssignedto()!=null) {
+				ServiceProviderUserDTO toAdd=new ServiceProviderUserDTO();
+				toAdd.setCell(job.getAssignedto().getCell());
 
-				JobDTO toSend=new JobDTO(job);
-
-				if(job.getAssignedto()!=null) {
-					ServiceProviderUserDTO toAdd=new ServiceProviderUserDTO();
-					toAdd.setCell(job.getAssignedto().getCell());
-
-					LocationRecord latestLocation=objLocationRecordRepo.findTopByOfOrderByTimeondeviceDesc(job.getAssignedto());
-					if(latestLocation!=null) {
-						toAdd.setCurrentlati(latestLocation.getLati());
-						toAdd.setCurrentlongi(latestLocation.getLongi());
-					}
-
-
-
-					toSend.setAssignedtodetails(toAdd);		
-					toSend.setAssignedto(""+job.getAssignedto().getName()+" ("+job.getAssignedto().getCell()+")");
+				LocationRecord latestLocation=objLocationRecordRepo.
+						findTopByOfOrderByTimeondeviceDesc(job.getAssignedto());
+				if(latestLocation!=null) {
+					toAdd.setCurrentlati(latestLocation.getLati());
+					toAdd.setCurrentlongi(latestLocation.getLongi());
+				}
 
 
 
+				toSend.setAssignedtodetails(toAdd);
+				toSend.setAssignedto(""+job.getAssignedto().getName()+" ("+job.getAssignedto().getCell()+")");
 
-				} 
-				return ResponseEntity
-						.status(HttpStatus.OK)
-						.body(toSend);
-			} else {
-				return ResponseEntity
-						.status(HttpStatus.METHOD_FAILURE)
-						.body(new MessageResponce("Not your Job."));
+
+
+
 			}
+			return ResponseEntity
+					.status(HttpStatus.OK)
+					.body(toSend);
 		} else {
 			return ResponseEntity
-					.status(HttpStatus.METHOD_FAILURE)
-					.body(new MessageResponce("Job not found."));
+					.status(HttpStatus.PRECONDITION_FAILED)
+					.body(new MessageResponce("Job not found (001)."));
 		}
+
+
+
+
+
 
 
 	}
@@ -198,7 +240,6 @@ public class CustomerController {
 	public ResponseEntity<?> createJobRequest(@RequestHeader String sessiontoken,
 			@RequestParam HashSet<String> jobtypes,
 			@RequestParam String description,
-			@RequestParam String notes,
 			@RequestParam double lati,
 			@RequestParam double longi,
 			@RequestParam(required=false) String scheduledAt) throws ParseException {
@@ -222,12 +263,23 @@ public class CustomerController {
 
 		}
 
+		Jobs job = objJobsRepo.findByCreatedbyStateIn(apu,
+				JobState.NEW_JOB_SCHEDULED_LATER,
+				JobState.NEW_JOB_WANTS_SERVICE_NOW,
+				JobState.JOB_ASSIGNED_TO_SP);
+
+		if(job!=null){
+			return ResponseEntity
+					.status(HttpStatus.PRECONDITION_FAILED)
+					.body(new MessageResponce("You already have a job created or assigned to sp."));
+		}
+
 
 		Jobs newJob = new Jobs();
 		newJob.setCreatedby(apu);
 		newJob.setJobtypes(jobtypes);
 		newJob.setDescription(description);
-		newJob.setNotes(notes);
+		//newJob.setNotes(notes);
 		newJob.setLati(lati);
 		newJob.setLongi(longi);
 
@@ -262,9 +314,20 @@ public class CustomerController {
 
 		newJob=objJobsRepo.saveAndFlush(newJob);
 
+		if(apu.getFcmtoken()!=null && !apu.getFcmtoken().trim().isEmpty()) {
+			try {
+				objPushNotificationUtil.sendNotificationToAndroid(apu.getFcmtoken(),
+						"Car City",
+						"Aap ko guzarish mossol ho gaye hay juld aap ko sp assign ho jaye ga.");
+			} catch (Exception ex) {
+
+			}
+
+		}
+
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(new MessageResponce(newJob.getId()+""));
+				.body(new MessageResponce("Done"));
 	}
 
 
