@@ -34,7 +34,7 @@ public class JobsManager implements DisposableBean, Runnable {
         while(true){
             try{
                 Thread.sleep(30000);
-                List<Jobs> jobs=objJobsRepo.findAllByStageIn(JobState.NEW_JOB_WANTS_SERVICE_NOW);
+                List<Jobs> jobs=objJobsRepo.findAllByState(JobState.NEW_JOB_WANTS_SERVICE_NOW);
                 if(jobs!=null){
                     for(Jobs i: jobs){
                         if(i.getAssignedto()==null){

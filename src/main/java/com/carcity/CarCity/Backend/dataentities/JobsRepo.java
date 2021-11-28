@@ -13,9 +13,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface JobsRepo extends JpaRepository<Jobs,Integer> {
 	Jobs findByAssignedto(ApplicationUser assignedto);
-	Jobs findByCreatedbyStateIn(ApplicationUser customer,JobState ...states);
-	List<Jobs> findAllByCreatedbyStateIn(ApplicationUser customer,JobState ...states);
-	List<Jobs> findAllByStageIn(JobState js);
+	Jobs findByCreatedbyAndStateIn(ApplicationUser customer,List<JobState> states);
+	List<Jobs> findAllByCreatedbyAndStateIn(ApplicationUser customer,List<JobState> states);
+	List<Jobs> findAllByState(JobState js);
 
 	@Query("select j.assignedto.id from Jobs j")
 	Set<Integer> getIdsOfAssignedUsers();

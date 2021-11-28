@@ -2,10 +2,7 @@ package com.carcity.CarCity.Backend.RestContollers;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.carcity.CarCity.Backend.PushNotificationUtil;
@@ -150,10 +147,10 @@ public class CustomerController {
 		}
 
 
-		List<Jobs> jobs = objJobsRepo.findAllByCreatedbyStateIn(apu,
-				JobState.NEW_JOB_SCHEDULED_LATER,
+		List<Jobs> jobs = objJobsRepo.findAllByCreatedbyAndStateIn(apu,
+				Arrays.asList(JobState.NEW_JOB_SCHEDULED_LATER,
 				JobState.NEW_JOB_WANTS_SERVICE_NOW,
-				JobState.JOB_ASSIGNED_TO_SP);
+				JobState.JOB_ASSIGNED_TO_SP));
 
 		if(jobs!=null){
 			for(Jobs j:jobs){
@@ -191,10 +188,10 @@ public class CustomerController {
 		}
 
 
-		Jobs job = objJobsRepo.findByCreatedbyStateIn(apu,
-				JobState.NEW_JOB_SCHEDULED_LATER,
+		Jobs job = objJobsRepo.findByCreatedbyAndStateIn(apu,
+				Arrays.asList(JobState.NEW_JOB_SCHEDULED_LATER,
 				JobState.NEW_JOB_WANTS_SERVICE_NOW,
-				JobState.JOB_ASSIGNED_TO_SP);
+				JobState.JOB_ASSIGNED_TO_SP));
 
 		if(job!=null){
 			JobDTO toSend=new JobDTO(job);
@@ -263,10 +260,10 @@ public class CustomerController {
 
 		}
 
-		Jobs job = objJobsRepo.findByCreatedbyStateIn(apu,
-				JobState.NEW_JOB_SCHEDULED_LATER,
+		Jobs job = objJobsRepo.findByCreatedbyAndStateIn(apu,
+				Arrays.asList(JobState.NEW_JOB_SCHEDULED_LATER,
 				JobState.NEW_JOB_WANTS_SERVICE_NOW,
-				JobState.JOB_ASSIGNED_TO_SP);
+				JobState.JOB_ASSIGNED_TO_SP));
 
 		if(job!=null){
 			return ResponseEntity
