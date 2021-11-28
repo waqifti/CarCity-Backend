@@ -150,11 +150,13 @@ public class CustomerController {
 		List<Jobs> jobs = objJobsRepo.findAllByCreatedbyAndStateIn(apu,
 				Arrays.asList(JobState.NEW_JOB_SCHEDULED_LATER,
 				JobState.NEW_JOB_WANTS_SERVICE_NOW,
-				JobState.JOB_ASSIGNED_TO_SP));
+				JobState.JOB_ASSIGNED_TO_SP,
+						JobState.CANCEL_BY_CUSTOMER));
 
 		if(jobs!=null){
 			for(Jobs j:jobs){
 				j.setState(JobState.CANCEL_BY_CUSTOMER);
+				j.setAssignedto(null);
 				objJobsRepo.saveAndFlush(j);
 			}
 		}
