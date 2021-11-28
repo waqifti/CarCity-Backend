@@ -81,58 +81,8 @@ public class CarCityBackendApplication {
 		//System.out.println(latestLocation);
 	}
 	
-	public void initjobs(){
-		List<ApplicationUser> sps= objApplicationUserRepo.findAllByUt(UserTypes.ServiceProvider);
-		List<ApplicationUser> cuss= objApplicationUserRepo.findAllByUt(UserTypes.Customer);
-		for(int i=0;i<10;i++) {
-			int randomNum = ThreadLocalRandom.current().nextInt(0, sps.size());
-
-			Jobs toSave=new Jobs();
-			toSave.setManagedby(sps.get(randomNum));
-			
-			int randomNumCus = ThreadLocalRandom.current().nextInt(0, cuss.size());
-			toSave.setCreatedby(cuss.get(randomNumCus));
-			
-			toSave.setState(JobState.randomState());
-			toSave.setDescription("Short details");
-			toSave.setNotes("Long details Long details Long details Long details Long details Long details Long details Long details Long details Long details");
-			objJobsRepo.saveAndFlush(toSave);
-
-		}
-
-	}
-
-	public void initlocations(){
-		System.out.println("OK Start");
-
-		List<ApplicationUser> sps= objApplicationUserRepo.findAllByUt(UserTypes.ServiceProvider);
-
-		for(int i=0;i<100;i++) {
-			int randomNum = ThreadLocalRandom.current().nextInt(0, sps.size());
-
-			LocationRecord toSave=new LocationRecord();
-
-			List<Double> locR=getLocation(25);
-
-			toSave.setLongi(locR.get(0));
-			toSave.setLati(locR.get(1));
 
 
-
-			int hours = ThreadLocalRandom.current().nextInt(0, 72);
-
-			toSave.setTimeondevice(addHoursToJavaUtilDate(new Date(),-1*hours ));
-
-			toSave.setOf(sps.get(randomNum));
-
-			objLocationRecordRepo.saveAndFlush(toSave);
-		}
-
-
-
-
-		System.out.println("OK End");
-	}
 
 	public static void main(String[] args) throws ParseException {
 		
