@@ -58,14 +58,7 @@ public class JobDTO {
 
 		this.longi=j.getLongi();
 		this.lati=j.getLati();
-		this.createdby= ""+j.getCreatedby().getName()+" ("+j.getCreatedby().getCell()+")";
-		
 
-		if(j.getManagedby()!=null) {
-			this.managedby= ""+j.getManagedby().getName()+" ("+j.getManagedby().getUt().toString()+")";
-		} else {
-			this.managedby= "Not managed by anyone yet.";
-		}
 
 
 

@@ -29,7 +29,7 @@ public class ApplicationUser {
 	
 	private String password;
 	
-	private String name;
+
 	
 	private String sessiontoken;
 	
@@ -53,13 +53,7 @@ public class ApplicationUser {
 	
 	
 
-	public String getName() {
-		return name;
-	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public Boolean getJobsearchactivated() {
 		return jobsearchactivated;

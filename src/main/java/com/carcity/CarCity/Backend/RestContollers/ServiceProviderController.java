@@ -316,20 +316,26 @@ public class ServiceProviderController {
 
 		if(job!=null) {
 			JobDTO toSend= new JobDTO(job);
+			if(job.getManagedby()!=null) {
+				toSend.setCreatedby(""+objApplicationUserSettingsRepo.findAllByUserAndSettingname(job.getManagedby(),"Your Name")
+						+" ("+job.getManagedby().getCell()+")");
+			} else {
+				toSend.setManagedby("Not managed by anyone yet.");
+			}
 			if(job.getAssignedto()!=null) {
 				ServiceProviderUserDTO toAdd=new ServiceProviderUserDTO();
 				toAdd.setCell(job.getAssignedto().getCell());
 
-				LocationRecord latestLocation=objLocationRecordRepo.findTopByOfOrderByTimeondeviceDesc(job.getAssignedto());
-				if(latestLocation!=null) {
-					toAdd.setCurrentlati(latestLocation.getLati());
-					toAdd.setCurrentlongi(latestLocation.getLongi());
-				}
+				//LocationRecord latestLocation=objLocationRecordRepo.findTopByOfOrderByTimeondeviceDesc(job.getAssignedto());
+				//if(latestLocation!=null) {
+				//	toAdd.setCurrentlati(latestLocation.getLati());
+				//	toAdd.setCurrentlongi(latestLocation.getLongi());
+				//}
 
 
 
 				toSend.setAssignedtodetails(toAdd);		
-				toSend.setAssignedto(""+job.getAssignedto().getName()+" ("+job.getAssignedto().getCell()+")");
+				toSend.setAssignedto(""+objApplicationUserSettingsRepo.findAllByUserAndSettingname(job.getAssignedto(),"Your Name")+" ("+job.getAssignedto().getCell()+")");
 
 
 

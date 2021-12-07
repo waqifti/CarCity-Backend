@@ -199,6 +199,17 @@ public class CustomerController {
 		if(job!=null){
 			JobDTO toSend=new JobDTO(job);
 
+			toSend.setCreatedby(""+objApplicationUserSettingsRepo.findAllByUserAndSettingname(job.getCreatedby(),"Your Name")
+					+" ("+job.getCreatedby().getCell()+")");
+
+
+			if(job.getManagedby()!=null) {
+				toSend.setCreatedby(""+objApplicationUserSettingsRepo.findAllByUserAndSettingname(job.getManagedby(),"Your Name")
+						+" ("+job.getManagedby().getCell()+")");
+			} else {
+				toSend.setManagedby("Not managed by anyone yet.");
+			}
+
 			if(job.getAssignedto()!=null) {
 				ServiceProviderUserDTO toAdd=new ServiceProviderUserDTO();
 				toAdd.setCell(job.getAssignedto().getCell());
@@ -213,7 +224,7 @@ public class CustomerController {
 
 
 				toSend.setAssignedtodetails(toAdd);
-				toSend.setAssignedto(""+job.getAssignedto().getName()+" ("+job.getAssignedto().getCell()+")");
+				toSend.setAssignedto(""+objApplicationUserSettingsRepo.findAllByUserAndSettingname(job.getAssignedto(),"Your Name")+" ("+job.getAssignedto().getCell()+")");
 
 
 
