@@ -223,8 +223,10 @@ public class AdminPortalContoller {
 		List<JobDTO> toReturn = new ArrayList<JobDTO>();
 		for(Jobs i:jobs) {
 			JobDTO toAdd=new JobDTO(i);
+			toAdd.setCreatedby(""+objApplicationUserSettingsRepo.findAllByUserAndSettingname(i.getCreatedby(),"Your Name")
+					+" ("+i.getCreatedby().getCell()+")");
 			if(i.getManagedby()!=null) {
-				toAdd.setCreatedby(""+objApplicationUserSettingsRepo.findAllByUserAndSettingname(i.getManagedby(),"Your Name")
+				toAdd.setManagedby(""+objApplicationUserSettingsRepo.findAllByUserAndSettingname(i.getManagedby(),"Your Name")
 						+" ("+i.getManagedby().getCell()+")");
 			} else {
 				toAdd.setManagedby("Not managed by anyone yet.");

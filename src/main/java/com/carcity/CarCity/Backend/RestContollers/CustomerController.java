@@ -204,7 +204,7 @@ public class CustomerController {
 
 
 			if(job.getManagedby()!=null) {
-				toSend.setCreatedby(""+objApplicationUserSettingsRepo.findAllByUserAndSettingname(job.getManagedby(),"Your Name")
+				toSend.setManagedby(""+objApplicationUserSettingsRepo.findAllByUserAndSettingname(job.getManagedby(),"Your Name")
 						+" ("+job.getManagedby().getCell()+")");
 			} else {
 				toSend.setManagedby("Not managed by anyone yet.");

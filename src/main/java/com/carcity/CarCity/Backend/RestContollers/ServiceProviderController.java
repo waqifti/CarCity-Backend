@@ -316,8 +316,10 @@ public class ServiceProviderController {
 
 		if(job!=null) {
 			JobDTO toSend= new JobDTO(job);
+			toSend.setCreatedby(""+objApplicationUserSettingsRepo.findAllByUserAndSettingname(job.getCreatedby(),"Your Name")
+					+" ("+job.getCreatedby().getCell()+")");
 			if(job.getManagedby()!=null) {
-				toSend.setCreatedby(""+objApplicationUserSettingsRepo.findAllByUserAndSettingname(job.getManagedby(),"Your Name")
+				toSend.setManagedby(""+objApplicationUserSettingsRepo.findAllByUserAndSettingname(job.getManagedby(),"Your Name")
 						+" ("+job.getManagedby().getCell()+")");
 			} else {
 				toSend.setManagedby("Not managed by anyone yet.");
