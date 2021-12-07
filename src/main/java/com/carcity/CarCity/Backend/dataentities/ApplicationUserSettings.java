@@ -45,4 +45,9 @@ public class ApplicationUserSettings {
     public void setUser(ApplicationUser user) {
         this.user = user;
     }
+
+    @Override
+    public String toString() {
+        return settingvalue==null ? "":settingvalue;
+    }
 }
