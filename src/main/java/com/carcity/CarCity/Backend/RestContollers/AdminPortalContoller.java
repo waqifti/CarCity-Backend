@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import com.carcity.CarCity.Backend.dataentities.*;
 import com.carcity.CarCity.Backend.dtos.*;
@@ -430,6 +431,8 @@ public class AdminPortalContoller {
 
 
 		List<LocationDTO> toReturn = new ArrayList<LocationDTO>();
+		Date lastPutLocation = null ;
+
 		for(LocationRecord i:locations) {
 			Date ss=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse(starttime);
 			Date ee=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse(endtime);
@@ -437,8 +440,19 @@ public class AdminPortalContoller {
 			System.out.println("GetUsersRecordedLocations ss"+ss.toString());
 			System.out.println("GetUsersRecordedLocations ee"+ee.toString());
 			System.out.println("GetUsersRecordedLocations tod i"+i.getTimeondevice());
+
 			if(i.getTimeondevice().after(ss) && i.getTimeondevice().before(ee)){
+				if(lastPutLocation==null){
+
+				} else {
+					long diff = lastPutLocation.getTime() - i.getTimeondevice().getTime();//as given
+					long minutes = TimeUnit.MILLISECONDS.toMinutes(diff);
+					if(minutes<15){
+						continue;
+					}
+				}
 				toReturn.add(new LocationDTO(i));
+				lastPutLocation = i.getTimeondevice();
 			}
 
 
