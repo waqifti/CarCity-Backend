@@ -450,7 +450,7 @@ public class AdminPortalContoller {
 					long diff = lastPutLocation.getTime() - i.getTimeondevice().getTime();//as given
 					long minutes = Math.abs(TimeUnit.MILLISECONDS.toMinutes(diff));
 					//System.out.println("minutes "+minutes);
-					if(minutes<9){
+					if(minutes<15){
 						//System.out.println("GetUsersRecordedLocations lastPutLocation "+lastPutLocation);
 						//System.out.println("Skipped");
 						continue;
