@@ -180,11 +180,12 @@ public class ServiceProviderController {
 		try {
 			Date date1=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse(time);  
 			toSave.setTimeondevice(date1);
-
+			//logger.info("up ul 1 ",date1.toString());
 		} catch (Exception ex) {
 			try {
 				Date date1=new SimpleDateFormat("dd MMM yyyy HH:mm:ss").parse(time); 
 				toSave.setTimeondevice(date1);
+				//logger.info("up ul 2 ",date1.toString());
 			} catch (Exception ex2) {
 				toSave.setTimeondeviceasstring(time);
 				logger.error("SS2",ex2);

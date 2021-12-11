@@ -360,7 +360,9 @@ public class AdminPortalContoller {
 
 		List<ServiceProviderDTO> toReturn = new ArrayList<ServiceProviderDTO>();
 		for(ApplicationUser i:serviceproviders) {
-			toReturn.add(new ServiceProviderDTO(i));
+			ServiceProviderDTO toAdd = new ServiceProviderDTO(i);
+			toAdd.setName(objApplicationUserSettingsRepo.findAllByUserAndSettingname(i,"Your Name").getSettingvalue());
+			toReturn.add(toAdd);
 		}
 
 
@@ -385,11 +387,16 @@ public class AdminPortalContoller {
 		try {
 			Date ss=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse(starttime);
 			Date ee=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse(endtime);
+
+			System.out.println("GetUsersRecordedLocations ss"+ss.toString());
+			System.out.println("GetUsersRecordedLocations ee"+ee.toString());
 		} catch (Exception ex){
 			return ResponseEntity
 					.status(HttpStatus.METHOD_FAILURE)
 					.body(new MessageResponce("DATE/TIME FORMAT ERROR"));
 		}
+
+
 
 
 		ApplicationUser apu = objApplicationUserRepo.findBySessiontoken(sessiontoken);
@@ -427,6 +434,9 @@ public class AdminPortalContoller {
 			Date ss=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse(starttime);
 			Date ee=new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a").parse(endtime);
 
+			System.out.println("GetUsersRecordedLocations ss"+ss.toString());
+			System.out.println("GetUsersRecordedLocations ee"+ee.toString());
+			System.out.println("GetUsersRecordedLocations tod i"+i.getTimeondevice());
 			if(i.getTimeondevice().after(ss) && i.getTimeondevice().before(ee)){
 				toReturn.add(new LocationDTO(i));
 			}
