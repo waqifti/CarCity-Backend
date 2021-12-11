@@ -448,11 +448,11 @@ public class AdminPortalContoller {
 
 				} else {
 					long diff = lastPutLocation.getTime() - i.getTimeondevice().getTime();//as given
-					long minutes = TimeUnit.MILLISECONDS.toMinutes(diff);
-					System.out.println("minutes "+minutes);
+					long minutes = Math.abs(TimeUnit.MILLISECONDS.toMinutes(diff));
+					//System.out.println("minutes "+minutes);
 					if(minutes<9){
-						System.out.println("GetUsersRecordedLocations lastPutLocation "+lastPutLocation);
-						System.out.println("Skipped");
+						//System.out.println("GetUsersRecordedLocations lastPutLocation "+lastPutLocation);
+						//System.out.println("Skipped");
 						continue;
 					}
 				}
