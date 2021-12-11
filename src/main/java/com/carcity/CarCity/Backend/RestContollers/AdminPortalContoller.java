@@ -439,20 +439,25 @@ public class AdminPortalContoller {
 
 			System.out.println("GetUsersRecordedLocations ss"+ss.toString());
 			System.out.println("GetUsersRecordedLocations ee"+ee.toString());
-			System.out.println("GetUsersRecordedLocations tod i"+i.getTimeondevice());
+
 
 			if(i.getTimeondevice().after(ss) && i.getTimeondevice().before(ee)){
+				System.out.println("GetUsersRecordedLocations tod in range "+i.getTimeondevice());
+
 				if(lastPutLocation==null){
 
 				} else {
 					long diff = lastPutLocation.getTime() - i.getTimeondevice().getTime();//as given
 					long minutes = TimeUnit.MILLISECONDS.toMinutes(diff);
 					if(minutes<15){
+						System.out.println("Skipped");
 						continue;
 					}
 				}
 				toReturn.add(new LocationDTO(i));
 				lastPutLocation = i.getTimeondevice();
+			} else {
+				System.out.println("GetUsersRecordedLocations tod out of range "+i.getTimeondevice());
 			}
 
 
