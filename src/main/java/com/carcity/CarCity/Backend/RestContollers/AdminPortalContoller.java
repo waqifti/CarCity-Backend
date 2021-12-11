@@ -449,7 +449,7 @@ public class AdminPortalContoller {
 				} else {
 					long diff = lastPutLocation.getTime() - i.getTimeondevice().getTime();//as given
 					long minutes = TimeUnit.MILLISECONDS.toMinutes(diff);
-					if(minutes<15){
+					if(minutes<9){
 						System.out.println("Skipped");
 						continue;
 					}
