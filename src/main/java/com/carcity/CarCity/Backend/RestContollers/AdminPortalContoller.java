@@ -362,7 +362,7 @@ public class AdminPortalContoller {
 		List<ServiceProviderDTO> toReturn = new ArrayList<ServiceProviderDTO>();
 		for(ApplicationUser i:serviceproviders) {
 			ServiceProviderDTO toAdd = new ServiceProviderDTO(i);
-			toAdd.setName(objApplicationUserSettingsRepo.findAllByUserAndSettingname(i,"Your Name").getSettingvalue());
+			toAdd.setName(objApplicationUserSettingsRepo.findAllByUserAndSettingname(i,"Your Name")+"");
 			toReturn.add(toAdd);
 		}
 
